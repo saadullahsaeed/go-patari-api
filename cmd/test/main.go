@@ -15,7 +15,7 @@ func main() {
 	}
 	defer pc.Close()
 
-	res, err := pc.Search("waqt")
-	fmt.Println(res.Data.Song[0].Stream)
+	res, err := pc.Search("bulleya")
+	fmt.Println(res.Data.Song[0])
 	fmt.Println(err)
 }
