@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	defaultAPIHost = "wss://search-0-0.patari.pk/realtime"
+	defaultWSEndpoint = "wss://search-0-0.patari.pk/realtime"
+	defaultAPIHost    = "http://api.patari.pk/site/getPlaylist/5816787496e4ad32405417f7"
 
 	// CDNHost to serve the static assets
 	CDNHost = "https://patarimedia.blob.core.windows.net/patari/"
@@ -15,18 +16,19 @@ const (
 
 // Client ...
 type Client struct {
-	Host       string
-	Connection *websocket.Conn
+	WebsocketEndpoint string
+	APIHost           string
+	Connection        *websocket.Conn
 }
 
 // Connect establishes a websocket connection with the Host
 func (c *Client) Connect() error {
-	if c.Host == "" {
-		c.Host = defaultAPIHost
+	if c.WebsocketEndpoint == "" {
+		c.WebsocketEndpoint = defaultWSEndpoint
 	}
 
 	var err error
-	c.Connection, _, err = websocket.DefaultDialer.Dial(c.Host, nil)
+	c.Connection, _, err = websocket.DefaultDialer.Dial(c.WebsocketEndpoint, nil)
 	if err != nil {
 		return err
 	}
@@ -42,12 +44,12 @@ func (c *Client) Close() error {
 func (c *Client) Search(term string) (*SearchResponse, error) {
 	r := &RequestData{
 		Command:        CommandSearch,
-		Categories:     []string{CategorySong},
-		CategoryLimits: []int{100},
+		Categories:     []string{CategorySong, CategoryArtist, CategoryAlbum, CategoryPlaylist},
+		CategoryLimits: []int{100, 100, 100, 100},
 		Message:        term,
 	}
 
-	jrm, err := c.RequestAPI(r)
+	jrm, err := c.RequestWebsocket(r)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +59,13 @@ func (c *Client) Search(term string) (*SearchResponse, error) {
 	return res, err
 }
 
-// RequestAPI sends a websocket command to the Patari API
-func (c *Client) RequestAPI(r *RequestData) (json.RawMessage, error) {
+// GetPlaylist
+func (c *Client) GetPlaylist(pid string) (*PlaylistDetail, error) {
+	return nil, nil
+}
+
+// RequestWebsocket sends a websocket command to the Patari API
+func (c *Client) RequestWebsocket(r *RequestData) (json.RawMessage, error) {
 	jdata, err := json.Marshal(r)
 	if err != nil {
 		return nil, err
@@ -74,6 +81,12 @@ func (c *Client) RequestAPI(r *RequestData) (json.RawMessage, error) {
 		return nil, err
 	}
 	return message, nil
+}
+
+// RequestHTTPAPI sends a websocket command to the Patari API
+func (c *Client) RequestHTTPAPI(method, action string, data interface{}) (json.RawMessage, error) {
+
+	return nil, nil
 }
 
 // NewClient returns an instance of Patari API client

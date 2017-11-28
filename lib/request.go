@@ -4,10 +4,16 @@ const (
 	// CommandSearch performs search for songs, albums etc.
 	CommandSearch = "search"
 
-	// Categories
-	CategorySong     = "song"
-	CategoryArtist   = "artist"
-	CategoryAlbum    = "album"
+	// CategorySong ...
+	CategorySong = "song"
+
+	// CategoryArtist ...
+	CategoryArtist = "artist"
+
+	// CategoryAlbum ...
+	CategoryAlbum = "album"
+
+	// CategoryPlaylist ...
 	CategoryPlaylist = "playlist"
 )
 
