@@ -8,7 +8,9 @@ Supported API Methods:
 * Get Playlist
 
 ## Installation
-```go get github.com/saadullahsaeed/go-patari-api```
+```
+go get github.com/saadullahsaeed/go-patari-api
+```
 
 ### Usage
 
