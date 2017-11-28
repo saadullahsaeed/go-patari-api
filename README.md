@@ -30,8 +30,14 @@ func main() {
 	}
 	defer pc.Close()
 
+	// Search
 	res, err := pc.Search("bulleya")
 	fmt.Println(res.Data.Song[0])
+	fmt.Println(err)
+
+	// Get Playlist (use either playlist ID or the discovery slug)
+	pd, err := pc.GetPlaylist("Rock")
+	fmt.Println(pd.Songs[0])
 	fmt.Println(err)
 }
 
