@@ -2,13 +2,16 @@ package patari
 
 import (
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 
 	"github.com/gorilla/websocket"
 )
 
 const (
 	defaultWSEndpoint = "wss://search-0-0.patari.pk/realtime"
-	defaultAPIHost    = "http://api.patari.pk/site/getPlaylist/5816787496e4ad32405417f7"
+	defaultAPIHost    = "http://api.patari.pk/site"
 
 	// CDNHost to serve the static assets
 	CDNHost = "https://patarimedia.blob.core.windows.net/patari/"
@@ -59,9 +62,16 @@ func (c *Client) Search(term string) (*SearchResponse, error) {
 	return res, err
 }
 
-// GetPlaylist
+// GetPlaylist can accept a Playlist ID or a discovery slug
 func (c *Client) GetPlaylist(pid string) (*PlaylistDetail, error) {
-	return nil, nil
+	jstr, err := c.RequestHTTPAPI("GET", fmt.Sprintf("/getPlaylist/%s", pid), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	pd := &PlaylistDetail{}
+	err = json.Unmarshal(jstr, pd)
+	return pd, err
 }
 
 // RequestWebsocket sends a websocket command to the Patari API
@@ -84,9 +94,16 @@ func (c *Client) RequestWebsocket(r *RequestData) (json.RawMessage, error) {
 }
 
 // RequestHTTPAPI sends a websocket command to the Patari API
-func (c *Client) RequestHTTPAPI(method, action string, data interface{}) (json.RawMessage, error) {
-
-	return nil, nil
+func (c *Client) RequestHTTPAPI(method, url string, data interface{}) (json.RawMessage, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest(method, fmt.Sprintf("%s%s", defaultAPIHost, url), nil)
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-type", "application/json")
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(resp.Body)
 }
 
 // NewClient returns an instance of Patari API client

@@ -1,8 +1,11 @@
 # go-patari-api
-This is a simple GoLang package to access the Patari API.
+This is a simple GoLang package to access the Patari API. 
+
+I wrote this to get Patari playing on Sonos so I didn't focus on implementing all of the functionality available in the API and only the features I needed.
 
 Supported API Methods:
 * Search
+* Get Playlist
 
 ## Installation
 ```go get github.com/saadullahsaeed/go-patari-api```
@@ -16,7 +19,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/saadullahsaeed/go-patari-api/lib/patari"
+	patari "github.com/saadullahsaeed/go-patari-api/lib"
 )
 
 func main() {
